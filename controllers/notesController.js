@@ -2,11 +2,14 @@ const {
   list,
   create,
   del,
-  update
+  update,
+  find,
+  one
 } = require("../services/notesCrud/notesCrud.js");
 
 const notesController = async (req, res)=>{
   const {form, id} = req.body;
+  console.log(req.body)
 
   switch (req.method) {
     case "POST":
@@ -14,7 +17,17 @@ const notesController = async (req, res)=>{
       res.json(await create(form));
     break;
     case "GET":
-      res.json(await list());
+    console.log(req.params.name)
+      if (req.params.id !== undefined) {
+          res.json(await one(req.params.id));
+      }
+      else if (req.params.name !== undefined) {
+        res.json((await find(req.params.name)));
+      }
+      else{
+        res.json(await list());
+      }
+
     break;
 
     case "PUT":

@@ -4,8 +4,9 @@ const server = http.createServer(express);
 const parser = require("body-parser")
 const {notesController} = require("./controllers/notesController.js");
 
+var cors = require('cors')
 let app = express()
-
+app.use(cors())
 app.use(parser.urlencoded({extended:true}))
 app.use(parser.json())
 
@@ -20,6 +21,15 @@ app.get(
   notesController
 )
 
+app.get(
+  "/one/:id",
+  notesController
+)
+
+app.get(
+  "/find/:name",
+  notesController
+)
 
 app.post(
   "/create",

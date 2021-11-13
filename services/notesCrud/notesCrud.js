@@ -11,12 +11,32 @@ const list = async ()=>{
   return rows;
 }
 
+const one = async (id)=>{
+  const con = connection();
+  con.connect();
+  const query = util.promisify(con.query).bind(con);
+  const rows = await query(`select * from notes WHERE id=${id}`);
+  con.end();
+  return rows;
+}
+
+const find = async (name)=>{
+  const con = connection();
+  con.connect();
+  const query = util.promisify(con.query).bind(con);
+
+  const rows = await query(`select * from notes WHERE nombre='${name}' OR nombre LIKE '%${name}' OR nombre LIKE '${name}%' OR nombre LIKE '%${name}%'`);
+
+  con.end();
+  return rows;
+}
+
 
 const create = async (obj)=>{
   const con = connection();
   con.connect();
   const query = util.promisify(con.query).bind(con);
-  let sql = `INSERT INTO notes (nombre, nota1, nota2, nota3, nota4, promedio, fecha_creacion) VALUES ('${obj.nombre}', ${obj.nota1}, ${obj.nota2}, ${obj.nota3}, ${obj.nota4}, ${obj.promedio}, '${new Date().toLocaleString()}')`;
+  let sql = `INSERT INTO notes (nombre, nota1, nota2, nota3, nota4, promedio, fecha_creacion) VALUES ('${obj.nombre}', ${obj.nota1}, ${obj.nota2}, ${obj.nota3}, ${obj.nota4}, ${obj.promedio}, '${new Date().toISOString()}')`;
   const res = await query(sql);
   console.log(res)
   con.end();
@@ -53,5 +73,7 @@ module.exports = {
   list:list,
   create:create,
   del:del,
-  update:update
+  update:update,
+  one:one,
+  find:find
 }
